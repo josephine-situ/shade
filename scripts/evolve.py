@@ -1138,8 +1138,19 @@ def main() -> None:
         if fitness is not None and parent.get("fitness") is not None:
             diff = fitness - parent["fitness"]
             delta = f"  ({'+' if diff >= 0 else ''}{diff:.4f})"
-        cell_str = f"  cell={tuple(cell)}" if cell else ""
-        print(f"  {verdict}  fitness={fitness}{delta}{cell_str}  ({score_seconds:.0f}s)")
+        cell_str = ""
+        grid_status = ""
+        if cell is not None:
+            cell_str = f"  cell={tuple(cell)}"
+            # Check if this candidate will become the cell champion
+            prev_champ = grid.get(tuple(cell)) if map_elites_active else None
+            if prev_champ is None:
+                grid_status = "  NEW CELL"
+            elif fitness is not None and fitness > prev_champ["fitness"]:
+                grid_status = f"  CHAMPION (was {prev_champ['fitness']:.4f})"
+            else:
+                grid_status = "  discarded"
+        print(f"  {verdict}  fitness={fitness}{delta}{cell_str}{grid_status}  ({score_seconds:.0f}s)")
 
     # -- summary ---------------------------------------------------------- #
     print()
