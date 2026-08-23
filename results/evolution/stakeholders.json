@@ -1,0 +1,35 @@
+{
+  "gen47_6daffb24": {
+    "stakeholder": "Boston Public Health Commission",
+    "rationale": "Maximizes the number of residents moved below heat stress thresholds while delivering strong equity — vulnerable populations are the ones most at risk of heat-related illness and death. Highest equity ratio (1.68) among top-relief policies ensures interventions reach the neighborhoods that need them most.",
+    "weights": {
+      "access_gain_pp": 0.35,
+      "heat_relief_c": 0.30,
+      "equity_ratio": 0.25,
+      "cost_efficiency_person_c_per_100k": 0.05,
+      "cobenefit_greened_pct": 0.05
+    }
+  },
+  "gen73_10d1ce72": {
+    "stakeholder": "Environmental Justice Advocate (e.g. GreenRoots, ACE)",
+    "rationale": "Highest greening co-benefit (0.29) combined with strong equity (1.52). Trees and green space are permanent community assets that deliver benefits beyond heat — air quality, stormwater management, mental health, property stabilization. For communities that have been disproportionately burdened by environmental harm, temporary fixes are not enough; equitable, lasting green infrastructure is the priority.",
+    "weights": {
+      "equity_ratio": 0.40,
+      "cobenefit_greened_pct": 0.25,
+      "heat_relief_c": 0.20,
+      "access_gain_pp": 0.10,
+      "cost_efficiency_person_c_per_100k": 0.05
+    }
+  },
+  "gen99_33e4e664": {
+    "stakeholder": "City Chief Financial Officer",
+    "rationale": "Maximum heat relief per dollar spent (50.58 person-degC per $100k), the highest absolute relief (0.0328°C), and the most residents moved below the stress threshold (0.1273). This is the policy that makes the strongest case in a budget hearing: every dollar produces measurable, defensible impact. Equity is lower (1.08) but still above 1.0, meaning vulnerable communities still benefit proportionally.",
+    "weights": {
+      "cost_efficiency_person_c_per_100k": 0.35,
+      "heat_relief_c": 0.30,
+      "access_gain_pp": 0.20,
+      "equity_ratio": 0.10,
+      "cobenefit_greened_pct": 0.05
+    }
+  }
+}

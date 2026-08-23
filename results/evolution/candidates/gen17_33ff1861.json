@@ -1,0 +1,42 @@
+{
+  "id": "gen17_33ff1861",
+  "generation": 17,
+  "parent_id": "gen04_9c03819a",
+  "inspiration_ids": [
+    "gen03_1dd7db33",
+    "gen02_5c645778"
+  ],
+  "policy_name": "dual-tier-tree dense shade v1",
+  "description": "Two-tier tree strategy: medium trees (6687/tree) planted at 5m spacing ",
+  "code": "from __future__ import annotations\n\nimport numpy as np\nfrom policy_api import Placement, PlanningContext\n\nPOLICY_NAME = \"dual-tier-tree dense shade v1\"\nDESCRIPTION = (\n    \"Two-tier tree strategy: medium trees (6687/tree) planted at 5m spacing \"\n    \"on hottest high-priority pedestrian corridors (60% of budget), then small \"\n    \"trees (2024/tree) fill remaining plantable spots at 4m spacing (20% budget), \"\n    \"then shade canopies cover hottest open buildable ground (20% budget). \"\n    \"Priority surface: 0.45 afternoon heat, 0.20 heat hours, 0.20 population, \"\n    \"0.10 vulnerability, 0.05 UHII. Priority-tract boost 0.15. \"\n    \"Dense multi-tier shade maximizes UTCI relief per dollar. Albedo avoided.\"\n)\n\nWEIGHTS = {\n    \"heat_ta3pm\":    0.45,\n    \"heat_hours\":    0.20,\n    \"population\":    0.20,\n    \"vulnerability\": 0.10,\n    \"uhii\":          0.05,\n}\n\nPRIORITY_BOOST        = 0.15\nMEDIUM_TREE_BUDGET_FRAC = 0.60\nSMALL_TREE_BUDGET_FRAC  = 0.20\nCANOPY_BUDGET_FRAC      = 0.20\n\nMEDIUM_TREE_SPACING_M = 5.0\nSMALL_TREE_SPACING_M  = 4.0\n\n\ndef _norm(arr: np.ndarray, mask: np.ndarray) -> np.ndarray:\n    \"\"\"Min-max normalise arr to [0,1] over masked pixels; 0.5 if constant.\"\"\"\n    vals = arr[mask]\n    if vals.size == 0:\n        return np.zeros_like(arr, dtype=\"float64\")\n    lo, hi = float(np.min(vals)), float(np.max(vals))\n    if hi - lo < 1e-9:\n        return np.where(mask, 0.5, 0.0).astype(\"float64\")\n    return np.clip((arr.astype(\"float64\") - lo) / (hi - lo), 0.0, 1.0)\n\n\ndef priority_surface(ctx: PlanningContext) -> np.ndarray:\n    \"\"\"Composite priority surface over exposure pixels.\"\"\"\n    mask = ctx.exposure\n    score = (\n          WEIGHTS[\"heat_ta3pm\"]    * _norm(ctx.heat_ta3pm,    mask)\n        + WEIGHTS[\"heat_hours\"]    * _norm(ctx.heat_hours,    mask)\n        + WEIGHTS[\"population\"]    * _norm(ctx.population,    mask)\n        + WEIGHTS[\"vulnerability\"] * _norm(ctx.vulnerability, mask)\n        + WEIGHTS[\"uhii\"]          * _norm(ctx.heat_uhii,     mask)\n    )\n    score += np.where(ctx.priority, PRIORITY_BOOST, 0.0)\n    return np.where(mask, score, -np.inf)\n\n\ndef _greedy_spaced(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    spacing_px: int,\n    limit: int,\n    used: np.ndarray,\n) -> tuple[np.ndarray, np.ndarray]:\n    \"\"\"\n    Greedy selection respecting spacing and already-used pixels.\n    Returns picked (rows, cols).\n    \"\"\"\n    cand = candidates & ~used\n    rows, cols = np.nonzero(cand)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n\n    order = np.argsort(-score[rows, cols])\n    rows, cols = rows[order], cols[order]\n\n    taken = np.zeros(score.shape, dtype=bool)\n    # Pre-mark used pixels\n    taken |= used\n    span = max(int(spacing_px), 1)\n    pick_r: list[int] = []\n    pick_c: list[int] = []\n\n    for r, c in zip(rows, cols):\n        if taken[r, c]:\n            continue\n        pick_r.append(int(r))\n        pick_c.append(int(c))\n        r0 = max(0, r - span);  r1 = min(score.shape[0], r + span + 1)\n        c0 = max(0, c - span);  c1 = min(score.shape[1], c + span + 1)\n        taken[r0:r1, c0:c1] = True\n        if len(pick_r) >= limit:\n            break\n\n    return np.array(pick_r, dtype=int), np.array(pick_c, dtype=int)\n\n\ndef _top_pixels(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    limit: int,\n    used: np.ndarray,\n) -> tuple[np.ndarray, np.ndarray]:\n    \"\"\"Select the top `limit` candidate pixels by score, excluding used pixels.\"\"\"\n    cand = candidates & ~used\n    rows, cols = np.nonzero(cand)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n    order = np.argsort(-score[rows, cols])[:limit]\n    return rows[order], cols[order]\n\n\ndef _mark_crown(\n    covered: np.ndarray,\n    rows: np.ndarray,\n    cols: np.ndarray,\n    crown_px: int,\n    shape: tuple[int, int],\n) -> None:\n    \"\"\"Stamp a box crown_px wide around each (r, c) into covered.\"\"\"\n    r0s = np.maximum(0, rows - crown_px)\n    r1s = np.minimum(shape[0], rows + crown_px + 1)\n    c0s = np.maximum(0, cols - crown_px)\n    c1s = np.minimum(shape[1], cols + crown_px + 1)\n    for i in range(len(rows)):\n        covered[r0s[i]:r1s[i], c0s[i]:c1s[i]] = True\n\n\ndef plan(ctx: PlanningContext, budget_usd: float) -> list[Placement]:\n    score      = priority_surface(ctx)\n    placements : list[Placement] = []\n    spent      = 0.0\n    used       = np.zeros(ctx.shape, dtype=bool)\n\n    # \u2500\u2500 1. Medium street trees (60% budget, 5 m spacing) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n    medium_budget = budget_usd * MEDIUM_TREE_BUDGET_FRAC\n    n_medium_max  = ctx.affordable(\"tree_medium\", medium_budget)\n    spacing_med   = max(int(round(MEDIUM_TREE_SPACING_M / ctx.res_m)), 1)\n\n    tr_m, tc_m = _greedy_spaced(\n        score, ctx.plantable, spacing_med, n_medium_max, used\n    )\n\n    if tr_m.size:\n        placements.append(Placement(\"tree_medium\", tr_m, tc_m))\n        spent += ctx.cost(\"tree_medium\", tr_m.size)\n        used[tr_m, tc_m] = True\n\n    # \u2500\u2500 2. Small street trees (20% budget, 4 m spacing on remaining spots) \u2500\u2500\n    remaining_small = budget_usd * SMALL_TREE_BUDGET_FRAC\n    # Also allow underspent medium budget to roll over\n    remaining_small = min(remaining_small + max(0.0, medium_budget - spent), budget_usd - spent)\n    \n    n_small_max  = ctx.affordable(\"tree_small\", remaining_small)\n    spacing_sml  = max(int(round(SMALL_TREE_SPACING_M / ctx.res_m)), 1)\n\n    tr_s, tc_s = _greedy_spaced(\n        score, ctx.plantable, spacing_sml, n_small_max, used\n    )\n\n    if tr_s.size:\n        cost_small = ctx.cost(\"tree_small\", tr_s.size)\n        if spent + cost_small <= budget_usd:\n            placements.append(Placement(\"tree_small\", tr_s, tc_s))\n            spent += cost_small\n            used[tr_s, tc_s] = True\n\n    # \u2500\u2500 3. Shade canopies (remaining budget, hottest open ground) \u2500\u2500\u2500\u2500\u2500\u2500\n    remaining = budget_usd - spent\n    if remaining <= 0.0:\n        return placements\n\n    # Mark crown footprints so canopies don't conflict with tree placements\n    covered  = np.zeros(ctx.shape, dtype=bool)\n    # Medium tree crown ~3.5m radius = ~2px; small tree ~2m = ~1px\n    crown_med = max(int(round(3.5 / ctx.res_m)), 1)\n    crown_sml = max(int(round(2.0 / ctx.res_m)), 1)\n    if tr_m.size:\n        _mark_crown(covered, tr_m, tc_m, crown_med, ctx.shape)\n    if tr_s.size:\n        _mark_crown(covered, tr_s, tc_s, crown_sml, ctx.shape)\n\n    open_ground = ctx.buildable & (ctx.cdsm <= 0.0) & ~covered & ~used\n\n    n_canopy_max = ctx.affordable(\"shade_canopy\", remaining)\n    n_canopy     = min(n_canopy_max, int(open_ground.sum()))\n\n    cr, cc = _top_pixels(score, open_ground, n_canopy, used)\n    if cr.size:\n        cost_canopy = ctx.cost(\"shade_canopy\", cr.size)\n        if spent + cost_canopy <= budget_usd:\n            placements.append(Placement(\"shade_canopy\", cr, cc))\n\n    return placements",
+  "verdict": "feasible",
+  "objectives": {
+    "heat_relief_c": 0.0233,
+    "access_gain_pp": 0.3227,
+    "equity_ratio": 1.5597,
+    "cobenefit_greened_pct": 0.1963,
+    "cost_efficiency_person_c_per_100k": 35.02,
+    "spend_usd": 1489608.0,
+    "per_aoi_heat_relief_c": {
+      "chinatown": 0.014,
+      "brighton": 0.032,
+      "grove_hall": 0.024
+    }
+  },
+  "violations": {},
+  "fitness": 0.0233,
+  "cell": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "aois_scored": [
+    "chinatown",
+    "brighton",
+    "grove_hall"
+  ],
+  "timestamp_utc": "20260823T053313Z",
+  "model": "claude-sonnet-4-6",
+  "score_json_path": "/Users/rreger-mbp-26/Downloads/Projects/SHADE/runs/evolve_20260823T045409Z/score_gen17_33ff1861"
+}

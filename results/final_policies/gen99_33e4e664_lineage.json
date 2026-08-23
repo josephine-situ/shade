@@ -1,0 +1,88 @@
+[
+  {
+    "id": "gen99_33e4e664",
+    "generation": 99,
+    "policy_name": "dense-synergy-tight-trees no-equity v2",
+    "fitness": 0.0343,
+    "description": "Maximise heat_relief_c in cell (0,1,1,0): low equity_ratio, high ",
+    "inspirations": [
+      {
+        "id": "gen50_2931c524",
+        "generation": 50,
+        "policy_name": "synergy-corridor heat-equity v1",
+        "fitness": 0.0263
+      },
+      {
+        "id": "gen60_980daac3",
+        "generation": 60,
+        "policy_name": "dense-synergy-corridors no-equity-boost v1",
+        "fitness": 0.0342
+      }
+    ]
+  },
+  {
+    "id": "gen13_b4c81ffa",
+    "generation": 13,
+    "policy_name": "dense-corridor dual-tree canopy v3",
+    "fitness": 0.0297,
+    "description": "Maximise population-weighted UTCI relief via three-phase shading: ",
+    "inspirations": [
+      {
+        "id": "gen05_ef962afb",
+        "generation": 5,
+        "policy_name": "population-heat max shade v2",
+        "fitness": 0.024
+      },
+      {
+        "id": "gen00_seed",
+        "generation": 0,
+        "policy_name": "hot-corridor trees, then canopies",
+        "fitness": 0.0293
+      }
+    ]
+  },
+  {
+    "id": "gen03_1dd7db33",
+    "generation": 3,
+    "policy_name": "heat-first medium trees with canopy infill v2",
+    "fitness": 0.027,
+    "description": "Maximise UTCI relief by aggressively targeting the hottest pedestrian ",
+    "inspirations": [
+      {
+        "id": "gen00_seed",
+        "generation": 0,
+        "policy_name": "hot-corridor trees, then canopies",
+        "fitness": 0.0293
+      },
+      {
+        "id": "gen01_f854af82",
+        "generation": 1,
+        "policy_name": "dense-small-tree equity corridors",
+        "fitness": 0.0253
+      }
+    ]
+  },
+  {
+    "id": "gen02_5c645778",
+    "generation": 2,
+    "policy_name": "tight-tree corridors with canopy infill",
+    "fitness": 0.026,
+    "description": "Build a heat \u00d7 heat-hours \u00d7 vulnerability \u00d7 population priority surface ",
+    "inspirations": [
+      {
+        "id": "gen01_f854af82",
+        "generation": 1,
+        "policy_name": "dense-small-tree equity corridors",
+        "fitness": 0.0253
+      }
+    ]
+  },
+  {
+    "id": "gen00_seed",
+    "generation": 0,
+    "policy_name": "hot-corridor trees, then canopies",
+    "fitness": 0.0293,
+    "description": "Rank pedestrian space by heat, vulnerability and footfall; plant medium ",
+    "inspirations": []
+  }
+]

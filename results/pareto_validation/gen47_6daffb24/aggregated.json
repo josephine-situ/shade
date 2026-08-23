@@ -1,0 +1,30 @@
+{
+  "heat_relief_c": 0.0305,
+  "access_gain_pp": 0.1136,
+  "equity_ratio": 1.6767,
+  "cobenefit_greened_pct": 0.2027,
+  "cost_efficiency_person_c_per_100k": 45.5,
+  "spend_usd": 9922240.0,
+  "per_aoi_heat_relief_c": {
+    "centre_south": 0.021,
+    "fields_corner": 0.0377,
+    "east_boston": 0.0192,
+    "west_roxbury": 0.0297,
+    "3_squares": 0.0405,
+    "allston_village": 0.0442,
+    "bowdoin_geneva": 0.0222,
+    "mission_hill": 0.0203,
+    "dudley_square": 0.0333,
+    "brighton": 0.0372,
+    "four_corners": 0.03,
+    "greater_ashmont": 0.039,
+    "hyde_park": 0.031,
+    "egleston_square": 0.025,
+    "mattapan": 0.0525,
+    "grove_hall": 0.0372,
+    "uphams_corner": 0.026,
+    "roslindale_village": 0.0362,
+    "washington_st_gateway": 0.0092,
+    "chinatown": 0.0182
+  }
+}

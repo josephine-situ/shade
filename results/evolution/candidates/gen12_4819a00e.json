@@ -1,0 +1,42 @@
+{
+  "id": "gen12_4819a00e",
+  "generation": 12,
+  "parent_id": "gen03_1dd7db33",
+  "inspiration_ids": [
+    "gen00_seed",
+    "gen02_5c645778"
+  ],
+  "policy_name": "heat-first hybrid trees canopy v3",
+  "description": "Maximise UTCI relief with a three-layer shade strategy: (1) medium trees ",
+  "code": "from __future__ import annotations\n\nimport numpy as np\n\nfrom policy_api import Placement, PlanningContext\n\nPOLICY_NAME = \"heat-first hybrid trees canopy v3\"\nDESCRIPTION = (\n    \"Maximise UTCI relief with a three-layer shade strategy: (1) medium trees \"\n    \"at 6m spacing in the hottest pedestrian corridors (60% budget), \"\n    \"(2) small trees at 4m spacing to extend corridor coverage (20% budget), \"\n    \"(3) shade canopies to fill remaining unshaded hot ground (20% budget). \"\n    \"Priority surface weights heat strongly (0.50 afternoon temp + 0.15 heat \"\n    \"hours + 0.10 UHII) with moderate vulnerability (0.15) and population \"\n    \"(0.10) signals. A small priority-tract boost (0.08) preserves equity. \"\n    \"Reflective surfaces avoided entirely (albedo trap).\"\n)\n\nWEIGHTS = {\n    \"heat_ta3pm\": 0.50,\n    \"heat_hours\": 0.15,\n    \"uhii\": 0.10,\n    \"vulnerability\": 0.15,\n    \"population\": 0.10,\n}\n\nPRIORITY_BOOST = 0.08\n\nMEDIUM_TREE_BUDGET_FRAC = 0.60\nSMALL_TREE_BUDGET_FRAC = 0.20\nCANOPY_BUDGET_FRAC = 0.20\n\nMEDIUM_TREE_SPACING_M = 6.0\nSMALL_TREE_SPACING_M = 4.0\n\n\ndef _norm(arr: np.ndarray, mask: np.ndarray) -> np.ndarray:\n    vals = arr[mask]\n    if vals.size == 0:\n        return np.zeros_like(arr, dtype=\"float64\")\n    lo, hi = float(np.min(vals)), float(np.max(vals))\n    if hi - lo < 1e-9:\n        return np.where(mask, 0.5, 0.0).astype(\"float64\")\n    return np.clip((arr.astype(\"float64\") - lo) / (hi - lo), 0.0, 1.0)\n\n\ndef priority_surface(ctx: PlanningContext) -> np.ndarray:\n    mask = ctx.exposure\n    score = (\n        WEIGHTS[\"heat_ta3pm\"]      * _norm(ctx.heat_ta3pm,     mask)\n        + WEIGHTS[\"heat_hours\"]    * _norm(ctx.heat_hours,     mask)\n        + WEIGHTS[\"uhii\"]          * _norm(ctx.heat_uhii,      mask)\n        + WEIGHTS[\"vulnerability\"] * _norm(ctx.vulnerability,  mask)\n        + WEIGHTS[\"population\"]    * _norm(ctx.population,     mask)\n    )\n    score = score + np.where(ctx.priority, PRIORITY_BOOST, 0.0)\n    return np.where(mask, score, -np.inf)\n\n\ndef _greedy_spaced(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    spacing_px: int,\n    limit: int,\n) -> tuple[np.ndarray, np.ndarray]:\n    rows, cols = np.nonzero(candidates)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n\n    order = np.argsort(-score[rows, cols])\n    rows, cols = rows[order], cols[order]\n\n    taken = np.zeros(score.shape, dtype=bool)\n    span = max(int(spacing_px), 1)\n    pick_r: list[int] = []\n    pick_c: list[int] = []\n\n    for r, c in zip(rows, cols):\n        if taken[r, c]:\n            continue\n        pick_r.append(int(r))\n        pick_c.append(int(c))\n        r0 = max(0, r - span)\n        r1 = min(score.shape[0], r + span + 1)\n        c0 = max(0, c - span)\n        c1 = min(score.shape[1], c + span + 1)\n        taken[r0:r1, c0:c1] = True\n        if len(pick_r) >= limit:\n            break\n\n    return np.array(pick_r, dtype=int), np.array(pick_c, dtype=int)\n\n\ndef _top_pixels(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    limit: int,\n) -> tuple[np.ndarray, np.ndarray]:\n    rows, cols = np.nonzero(candidates)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n    order = np.argsort(-score[rows, cols])[:limit]\n    return rows[order], cols[order]\n\n\ndef _mark_covered(\n    covered: np.ndarray,\n    tr: np.ndarray,\n    tc: np.ndarray,\n    crown_radius_m: float,\n    res_m: float,\n    shape: tuple[int, int],\n) -> None:\n    crown_px = max(int(round(crown_radius_m / res_m)), 1)\n    for r, c in zip(tr, tc):\n        r0 = max(0, r - crown_px)\n        r1 = min(shape[0], r + crown_px + 1)\n        c0 = max(0, c - crown_px)\n        c1 = min(shape[1], c + crown_px + 1)\n        covered[r0:r1, c0:c1] = True\n\n\ndef plan(ctx: PlanningContext, budget_usd: float) -> list[Placement]:\n    score = priority_surface(ctx)\n    placements: list[Placement] = []\n    spent = 0.0\n\n    # Track placed pixels to avoid double-booking\n    placed = np.zeros(ctx.shape, dtype=bool)\n    covered = np.zeros(ctx.shape, dtype=bool)\n\n    # ------------------------------------------------------------------ #\n    # 1. Medium trees: dominant shade action, 6m spacing for corridors    #\n    # ------------------------------------------------------------------ #\n    medium_budget = budget_usd * MEDIUM_TREE_BUDGET_FRAC\n    n_med_max = ctx.affordable(\"tree_medium\", medium_budget)\n    plantable_med = ctx.plantable & ~placed\n    n_med = min(n_med_max, int(plantable_med.sum()))\n\n    spacing_med = max(int(round(MEDIUM_TREE_SPACING_M / ctx.res_m)), 1)\n    mr, mc = _greedy_spaced(score, plantable_med, spacing_med, n_med)\n\n    if mr.size:\n        placements.append(Placement(\"tree_medium\", mr, mc))\n        spent += ctx.cost(\"tree_medium\", mr.size)\n        placed[mr, mc] = True\n        # Medium tree crown ~3.5m radius\n        _mark_covered(covered, mr, mc, 3.5, ctx.res_m, ctx.shape)\n\n    # ------------------------------------------------------------------ #\n    # 2. Small trees: extend coverage in areas medium trees didn't reach  #\n    #    4m spacing, use smaller budget fraction                          #\n    # ------------------------------------------------------------------ #\n    small_budget_alloc = budget_usd * SMALL_TREE_BUDGET_FRAC\n    # Allow underspend from medium trees to roll into small trees\n    small_budget = min(small_budget_alloc + max(0.0, medium_budget - spent), \n                       budget_usd - spent)\n    \n    if small_budget > ctx.unit_cost(\"tree_small\"):\n        n_small_max = ctx.affordable(\"tree_small\", small_budget)\n        # Prefer planting small trees where medium trees didn't go\n        # Prioritize uncovered hot areas\n        plantable_small = ctx.plantable & ~placed\n        n_small = min(n_small_max, int(plantable_small.sum()))\n\n        spacing_small = max(int(round(SMALL_TREE_SPACING_M / ctx.res_m)), 1)\n        sr, sc = _greedy_spaced(score, plantable_small, spacing_small, n_small)\n\n        if sr.size:\n            placements.append(Placement(\"tree_small\", sr, sc))\n            spent += ctx.cost(\"tree_small\", sr.size)\n            placed[sr, sc] = True\n            # Small tree crown ~2m radius\n            _mark_covered(covered, sr, sc, 2.0, ctx.res_m, ctx.shape)\n\n    # ------------------------------------------------------------------ #\n    # 3. Shade canopies: fill remaining hot open pedestrian ground        #\n    # ------------------------------------------------------------------ #\n    remaining = budget_usd - spent\n    if remaining > ctx.unit_cost(\"shade_canopy\"):\n        open_ground = ctx.buildable & (ctx.cdsm <= 0.0) & ~covered & ~placed\n        n_canopy_max = ctx.affordable(\"shade_canopy\", remaining)\n        n_canopy = min(n_canopy_max, int(open_ground.sum()))\n\n        cr, cc = _top_pixels(score, open_ground, n_canopy)\n        if cr.size:\n            placements.append(Placement(\"shade_canopy\", cr, cc))\n\n    return placements",
+  "verdict": "feasible",
+  "objectives": {
+    "heat_relief_c": 0.023,
+    "access_gain_pp": 0.2853,
+    "equity_ratio": 1.7489,
+    "cobenefit_greened_pct": 0.1947,
+    "cost_efficiency_person_c_per_100k": 35.39,
+    "spend_usd": 1489608.0,
+    "per_aoi_heat_relief_c": {
+      "chinatown": 0.019,
+      "brighton": 0.026,
+      "grove_hall": 0.024
+    }
+  },
+  "violations": {},
+  "fitness": 0.023,
+  "cell": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "aois_scored": [
+    "chinatown",
+    "brighton",
+    "grove_hall"
+  ],
+  "timestamp_utc": "20260823T052235Z",
+  "model": "claude-sonnet-4-6",
+  "score_json_path": "/Users/rreger-mbp-26/Downloads/Projects/SHADE/runs/evolve_20260823T045409Z/score_gen12_4819a00e"
+}

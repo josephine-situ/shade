@@ -1,0 +1,42 @@
+{
+  "id": "gen45_9e5c6233",
+  "generation": 45,
+  "parent_id": "gen33_1022f141",
+  "inspiration_ids": [
+    "gen02_5c645778",
+    "gen01_f854af82"
+  ],
+  "policy_name": "max-canopy-density synergy v3",
+  "description": "Maximise heat_relief_c via maximum-density medium tree corridors on a ",
+  "code": "from __future__ import annotations\n\nimport numpy as np\nfrom policy_api import Placement, PlanningContext\n\nPOLICY_NAME = \"max-canopy-density synergy v3\"\nDESCRIPTION = (\n    \"Maximise heat_relief_c via maximum-density medium tree corridors on a \"\n    \"heat\u00d7population synergy surface (75% budget at 2 m minimum spacing), \"\n    \"followed by shade canopies on hottest open ground (25% budget). \"\n    \"Priority-tract boost 0.35 preserves equity_ratio > 1. \"\n    \"Zero albedo interventions (avoids UTCI penalty from reflected shortwave).\"\n)\n\nPRIORITY_BOOST = 0.35\nFRAC_MED = 0.75\nFRAC_CANOPY = 0.25\nSPACING_MED_M = 2.0\n\n\ndef _norm(arr: np.ndarray, mask: np.ndarray) -> np.ndarray:\n    vals = arr[mask]\n    if vals.size == 0:\n        return np.zeros_like(arr, dtype=\"float64\")\n    lo, hi = float(np.min(vals)), float(np.max(vals))\n    if hi - lo < 1e-9:\n        return np.where(mask, 0.5, 0.0).astype(\"float64\")\n    return np.clip((arr.astype(\"float64\") - lo) / (hi - lo), 0.0, 1.0)\n\n\ndef priority_surface(ctx: PlanningContext) -> np.ndarray:\n    mask = ctx.exposure\n    heat_n = _norm(ctx.heat_ta3pm, mask)\n    pop_n = _norm(ctx.population, mask)\n    vuln_n = _norm(ctx.vulnerability, mask)\n    hours_n = _norm(ctx.heat_hours, mask)\n    uhii_n = _norm(ctx.heat_uhii, mask)\n    synergy = np.sqrt(np.clip(heat_n * pop_n, 0.0, None))\n    score = (\n        0.50 * synergy\n        + 0.20 * heat_n\n        + 0.15 * pop_n\n        + 0.10 * vuln_n\n        + 0.03 * hours_n\n        + 0.02 * uhii_n\n    )\n    score = score + np.where(ctx.priority, PRIORITY_BOOST, 0.0)\n    return np.where(mask, score, -np.inf)\n\n\ndef _greedy_spaced(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    spacing_px: int,\n    limit: int,\n) -> tuple[np.ndarray, np.ndarray]:\n    rows, cols = np.nonzero(candidates)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n    order = np.argsort(-score[rows, cols])\n    rows, cols = rows[order], cols[order]\n    taken = np.zeros(score.shape, dtype=bool)\n    span = max(int(spacing_px), 1)\n    pick_r: list[int] = []\n    pick_c: list[int] = []\n    H, W = score.shape\n    for r, c in zip(rows, cols):\n        if taken[r, c]:\n            continue\n        pick_r.append(int(r))\n        pick_c.append(int(c))\n        r0 = max(0, r - span)\n        r1 = min(H, r + span + 1)\n        c0 = max(0, c - span)\n        c1 = min(W, c + span + 1)\n        taken[r0:r1, c0:c1] = True\n        if len(pick_r) >= limit:\n            break\n    return np.array(pick_r, dtype=int), np.array(pick_c, dtype=int)\n\n\ndef _top_pixels(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    limit: int,\n) -> tuple[np.ndarray, np.ndarray]:\n    rows, cols = np.nonzero(candidates)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n    order = np.argsort(-score[rows, cols])[:limit]\n    return rows[order], cols[order]\n\n\ndef _stamp_box(arr: np.ndarray, rows: np.ndarray, cols: np.ndarray,\n               radius: int, H: int, W: int) -> None:\n    for i in range(len(rows)):\n        r, c = int(rows[i]), int(cols[i])\n        r0 = max(0, r - radius)\n        r1 = min(H, r + radius + 1)\n        c0 = max(0, c - radius)\n        c1 = min(W, c + radius + 1)\n        arr[r0:r1, c0:c1] = True\n\n\ndef plan(ctx: PlanningContext, budget_usd: float) -> list[Placement]:\n    score = priority_surface(ctx)\n    placements: list[Placement] = []\n    spent = 0.0\n    used = np.zeros(ctx.shape, dtype=bool)\n    H, W = ctx.shape\n\n    # \u2500\u2500 Medium trees: 75% budget, minimum 2m spacing \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n    med_budget = budget_usd * FRAC_MED\n    n_med_max = ctx.affordable(\"tree_medium\", med_budget)\n    spacing_px = max(int(round(SPACING_MED_M / ctx.res_m)), 1)\n    cand_med = ctx.plantable & ~used\n\n    tr, tc = _greedy_spaced(score, cand_med, spacing_px, n_med_max)\n    if tr.size:\n        placements.append(Placement(\"tree_medium\", tr, tc))\n        spent += ctx.cost(\"tree_medium\", tr.size)\n        used[tr, tc] = True\n\n    # \u2500\u2500 Shade canopies: remaining budget \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n    remaining = budget_usd - spent\n    if remaining <= 0.0:\n        return placements\n\n    covered = np.zeros(ctx.shape, dtype=bool)\n    covered[ctx.cdsm > 0.0] = True\n    crown_px = max(int(round(3.5 / ctx.res_m)), 1)\n    if tr.size:\n        _stamp_box(covered, tr, tc, crown_px, H, W)\n\n    open_ground = ctx.buildable & ~covered & ~used\n    n_can = ctx.affordable(\"shade_canopy\", remaining)\n    n_can = min(n_can, int(open_ground.sum()))\n    cr, cc = _top_pixels(score, open_ground, n_can)\n    if cr.size:\n        actual = ctx.cost(\"shade_canopy\", cr.size)\n        if spent + actual <= budget_usd + 0.01:\n            placements.append(Placement(\"shade_canopy\", cr, cc))\n        else:\n            n_fit = ctx.affordable(\"shade_canopy\", budget_usd - spent)\n            if n_fit > 0:\n                placements.append(Placement(\"shade_canopy\", cr[:n_fit], cc[:n_fit]))\n\n    return placements",
+  "verdict": "feasible",
+  "objectives": {
+    "heat_relief_c": 0.0213,
+    "access_gain_pp": 0.3683,
+    "equity_ratio": 1.6119,
+    "cobenefit_greened_pct": 0.169,
+    "cost_efficiency_person_c_per_100k": 32.89,
+    "spend_usd": 1490556.0,
+    "per_aoi_heat_relief_c": {
+      "chinatown": 0.008,
+      "brighton": 0.027,
+      "grove_hall": 0.029
+    }
+  },
+  "violations": {},
+  "fitness": 0.0213,
+  "cell": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "aois_scored": [
+    "chinatown",
+    "brighton",
+    "grove_hall"
+  ],
+  "timestamp_utc": "20260823T063724Z",
+  "model": "claude-sonnet-4-6",
+  "score_json_path": "/Users/rreger-mbp-26/Downloads/Projects/SHADE/runs/evolve_20260823T045409Z/score_gen45_9e5c6233"
+}

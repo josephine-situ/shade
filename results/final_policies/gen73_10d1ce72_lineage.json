@@ -1,0 +1,60 @@
+[
+  {
+    "id": "gen73_10d1ce72",
+    "generation": 73,
+    "policy_name": "synergy-equity-greening dense v2",
+    "fitness": 0.0277,
+    "description": "Cell (1,0,0,1): equity_ratio>=1, cobenefit_greened_pct>=0.1976, ",
+    "inspirations": [
+      {
+        "id": "gen60_980daac3",
+        "generation": 60,
+        "policy_name": "dense-synergy-corridors no-equity-boost v1",
+        "fitness": 0.0342
+      },
+      {
+        "id": "gen25_e257ea3f",
+        "generation": 25,
+        "policy_name": "dense-triple-action heat-population v4",
+        "fitness": 0.0303
+      }
+    ]
+  },
+  {
+    "id": "gen72_a9355d37",
+    "generation": 72,
+    "policy_name": "synergy-equity dense corridors v1",
+    "fitness": 0.026,
+    "description": "Combines the high-fitness dense synergy approach (3m medium tree spacing, ",
+    "inspirations": [
+      {
+        "id": "gen50_2931c524",
+        "generation": 50,
+        "policy_name": "synergy-corridor heat-equity v1",
+        "fitness": 0.0263
+      },
+      {
+        "id": "gen60_980daac3",
+        "generation": 60,
+        "policy_name": "dense-synergy-corridors no-equity-boost v1",
+        "fitness": 0.0342
+      }
+    ]
+  },
+  {
+    "id": "gen01_f854af82",
+    "generation": 1,
+    "policy_name": "dense-small-tree equity corridors",
+    "fitness": 0.0253,
+    "description": "Build a heat \u00d7 vulnerability \u00d7 population priority surface, then fill ",
+    "inspirations": []
+  },
+  {
+    "id": "gen00_seed",
+    "generation": 0,
+    "policy_name": "hot-corridor trees, then canopies",
+    "fitness": 0.0293,
+    "description": "Rank pedestrian space by heat, vulnerability and footfall; plant medium ",
+    "inspirations": []
+  }
+]

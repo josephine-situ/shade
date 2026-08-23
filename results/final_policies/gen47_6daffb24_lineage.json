@@ -1,0 +1,88 @@
+[
+  {
+    "id": "gen47_6daffb24",
+    "generation": 47,
+    "policy_name": "synergy-triple-shade corridors v1",
+    "fitness": 0.0323,
+    "description": "Maximise heat_relief_c via three-tier shade deployment with synergy-based ",
+    "inspirations": [
+      {
+        "id": "gen33_1022f141",
+        "generation": 33,
+        "policy_name": "synergy-shade heat-equity corridors v2",
+        "fitness": 0.0313
+      },
+      {
+        "id": "gen02_5c645778",
+        "generation": 2,
+        "policy_name": "tight-tree corridors with canopy infill",
+        "fitness": 0.026
+      }
+    ]
+  },
+  {
+    "id": "gen29_3360b7e4",
+    "generation": 29,
+    "policy_name": "dense-shade corridors v2",
+    "fitness": 0.026,
+    "description": "Maximise heat_relief_c via aggressive shade deployment: ",
+    "inspirations": [
+      {
+        "id": "gen02_5c645778",
+        "generation": 2,
+        "policy_name": "tight-tree corridors with canopy infill",
+        "fitness": 0.026
+      },
+      {
+        "id": "gen28_9d08d3cb",
+        "generation": 28,
+        "policy_name": "equity-heat medium tree corridors v2",
+        "fitness": 0.023
+      }
+    ]
+  },
+  {
+    "id": "gen21_60cc7c52",
+    "generation": 21,
+    "policy_name": "triple-action heat-equity corridors v1",
+    "fitness": 0.0293,
+    "description": "Maximise heat_relief_c (population-weighted UTCI drop) with a triple-action ",
+    "inspirations": [
+      {
+        "id": "gen09_c7e2c15b",
+        "generation": 9,
+        "policy_name": "dual-tree shade corridors v2",
+        "fitness": 0.029
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "generation": 3,
+        "policy_name": "heat-first medium trees with canopy infill v2",
+        "fitness": 0.027
+      }
+    ]
+  },
+  {
+    "id": "gen02_5c645778",
+    "generation": 2,
+    "policy_name": "tight-tree corridors with canopy infill",
+    "fitness": 0.026,
+    "description": "Build a heat \u00d7 heat-hours \u00d7 vulnerability \u00d7 population priority surface ",
+    "inspirations": [
+      {
+        "id": "gen01_f854af82",
+        "generation": 1,
+        "policy_name": "dense-small-tree equity corridors",
+        "fitness": 0.0253
+      }
+    ]
+  },
+  {
+    "id": "gen00_seed",
+    "generation": 0,
+    "policy_name": "hot-corridor trees, then canopies",
+    "fitness": 0.0293,
+    "description": "Rank pedestrian space by heat, vulnerability and footfall; plant medium ",
+    "inspirations": []
+  }
+]

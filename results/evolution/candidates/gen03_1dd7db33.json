@@ -1,0 +1,37 @@
+{
+  "id": "gen03_1dd7db33",
+  "generation": 3,
+  "parent_id": "gen02_5c645778",
+  "inspiration_ids": [
+    "gen00_seed",
+    "gen01_f854af82"
+  ],
+  "policy_name": "heat-first medium trees with canopy infill v2",
+  "description": "Maximise UTCI relief by aggressively targeting the hottest pedestrian ",
+  "code": "from __future__ import annotations\n\nimport numpy as np\n\nfrom policy_api import Placement, PlanningContext\n\nPOLICY_NAME = \"heat-first medium trees with canopy infill v2\"\nDESCRIPTION = (\n    \"Maximise UTCI relief by aggressively targeting the hottest pedestrian \"\n    \"corridors with medium street trees (80% of budget, 7 m spacing), then \"\n    \"infill remaining open ground with shade canopies. Priority surface \"\n    \"weights heat strongly (0.45 afternoon temp + 0.15 heat hours + 0.10 \"\n    \"UHII) with moderate vulnerability (0.20) and population (0.10) signals. \"\n    \"A small priority-tract boost (0.10) preserves equity without diluting \"\n    \"the heat signal. Reflective surfaces are avoided entirely.\"\n)\n\nWEIGHTS = {\n    \"heat_ta3pm\": 0.45,   # dominant driver: afternoon peak temperature\n    \"heat_hours\": 0.15,   # cumulative heat exposure\n    \"uhii\": 0.10,         # urban heat island intensity\n    \"vulnerability\": 0.20,\n    \"population\": 0.10,\n}\n\nPRIORITY_BOOST = 0.10   # small additive boost for top-quartile tracts\n\nTREE_BUDGET_FRAC = 0.80\nCANOPY_BUDGET_FRAC = 0.20\n\nTREE_SPACING_M = 7.0    # between 6m (parent) and 8m (inspiration1)\n\n\ndef _norm(arr: np.ndarray, mask: np.ndarray) -> np.ndarray:\n    \"\"\"Min-max normalise arr to [0,1] over mask; 0.5 if constant.\"\"\"\n    vals = arr[mask]\n    if vals.size == 0:\n        return np.zeros_like(arr, dtype=\"float64\")\n    lo, hi = float(np.min(vals)), float(np.max(vals))\n    if hi - lo < 1e-9:\n        return np.where(mask, 0.5, 0.0).astype(\"float64\")\n    return np.clip((arr.astype(\"float64\") - lo) / (hi - lo), 0.0, 1.0)\n\n\ndef priority_surface(ctx: PlanningContext) -> np.ndarray:\n    \"\"\"\n    Composite priority surface over exposure pixels.\n    High score = hot, vulnerable, populated pedestrian space.\n    \"\"\"\n    mask = ctx.exposure\n    score = (\n        WEIGHTS[\"heat_ta3pm\"]    * _norm(ctx.heat_ta3pm,  mask)\n        + WEIGHTS[\"heat_hours\"]  * _norm(ctx.heat_hours,  mask)\n        + WEIGHTS[\"uhii\"]        * _norm(ctx.heat_uhii,   mask)\n        + WEIGHTS[\"vulnerability\"] * _norm(ctx.vulnerability, mask)\n        + WEIGHTS[\"population\"]  * _norm(ctx.population,  mask)\n    )\n    score = score + np.where(ctx.priority, PRIORITY_BOOST, 0.0)\n    return np.where(mask, score, -np.inf)\n\n\ndef _greedy_spaced(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    spacing_px: int,\n    limit: int,\n) -> tuple[np.ndarray, np.ndarray]:\n    \"\"\"\n    Greedy selection: pick highest-scoring candidate, block spacing_px\n    neighbourhood, repeat until `limit` reached or no candidates left.\n    \"\"\"\n    rows, cols = np.nonzero(candidates)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n\n    order = np.argsort(-score[rows, cols])\n    rows, cols = rows[order], cols[order]\n\n    taken = np.zeros(score.shape, dtype=bool)\n    span = max(int(spacing_px), 1)\n    pick_r: list[int] = []\n    pick_c: list[int] = []\n\n    for r, c in zip(rows, cols):\n        if taken[r, c]:\n            continue\n        pick_r.append(int(r))\n        pick_c.append(int(c))\n        r0 = max(0, r - span)\n        r1 = min(score.shape[0], r + span + 1)\n        c0 = max(0, c - span)\n        c1 = min(score.shape[1], c + span + 1)\n        taken[r0:r1, c0:c1] = True\n        if len(pick_r) >= limit:\n            break\n\n    return np.array(pick_r, dtype=int), np.array(pick_c, dtype=int)\n\n\ndef _top_pixels(\n    score: np.ndarray,\n    candidates: np.ndarray,\n    limit: int,\n) -> tuple[np.ndarray, np.ndarray]:\n    \"\"\"Select top `limit` candidate pixels by score, no spacing constraint.\"\"\"\n    rows, cols = np.nonzero(candidates)\n    if rows.size == 0 or limit <= 0:\n        return np.array([], dtype=int), np.array([], dtype=int)\n    order = np.argsort(-score[rows, cols])[:limit]\n    return rows[order], cols[order]\n\n\ndef plan(ctx: PlanningContext, budget_usd: float) -> list[Placement]:\n    score = priority_surface(ctx)\n    placements: list[Placement] = []\n    spent = 0.0\n\n    # ------------------------------------------------------------------ #\n    # 1. Medium trees: dominant action for UTCI relief via shade          #\n    #    80% of budget, 7 m spacing for good corridor coverage            #\n    # ------------------------------------------------------------------ #\n    tree_budget = budget_usd * TREE_BUDGET_FRAC\n    n_trees_max = ctx.affordable(\"tree_medium\", tree_budget)\n    n_trees_avail = int(ctx.plantable.sum())\n    n_trees = min(n_trees_max, n_trees_avail)\n\n    spacing_px = max(int(round(TREE_SPACING_M / ctx.res_m)), 1)\n    tr, tc = _greedy_spaced(score, ctx.plantable, spacing_px, n_trees)\n\n    if tr.size:\n        placements.append(Placement(\"tree_medium\", tr, tc))\n        spent += ctx.cost(\"tree_medium\", tr.size)\n\n    # ------------------------------------------------------------------ #\n    # 2. Shade canopies: fill remaining hot open pedestrian ground        #\n    #    Use all remaining budget (tree underspend + canopy allocation)   #\n    # ------------------------------------------------------------------ #\n    remaining = budget_usd - spent\n\n    # Build a set of pixels already \"covered\" by new tree crowns\n    # Medium tree crown ~3-4 m radius \u2192 ~2 px at 2 m resolution\n    covered = np.zeros(ctx.shape, dtype=bool)\n    crown_px = max(int(round(3.5 / ctx.res_m)), 1)\n    if tr.size:\n        for r, c in zip(tr, tc):\n            r0 = max(0, r - crown_px)\n            r1 = min(ctx.shape[0], r + crown_px + 1)\n            c0 = max(0, c - crown_px)\n            c1 = min(ctx.shape[1], c + crown_px + 1)\n            covered[r0:r1, c0:c1] = True\n\n    # Canopy: buildable, no existing canopy, not covered by new trees,\n    # not already placed as a tree\n    open_ground = ctx.buildable & (ctx.cdsm <= 0.0) & ~covered\n    if tr.size:\n        open_ground[tr, tc] = False\n\n    n_canopy_max = ctx.affordable(\"shade_canopy\", remaining)\n    n_canopy = min(n_canopy_max, int(open_ground.sum()))\n\n    cr, cc = _top_pixels(score, open_ground, n_canopy)\n    if cr.size:\n        placements.append(Placement(\"shade_canopy\", cr, cc))\n\n    return placements",
+  "verdict": "feasible",
+  "objectives": {
+    "heat_relief_c": 0.027,
+    "access_gain_pp": 0.3133,
+    "equity_ratio": 1.4326,
+    "cobenefit_greened_pct": 0.1983,
+    "cost_efficiency_person_c_per_100k": 41.76,
+    "spend_usd": 1487439.0,
+    "per_aoi_heat_relief_c": {
+      "chinatown": 0.022,
+      "brighton": 0.031,
+      "grove_hall": 0.028
+    }
+  },
+  "violations": {},
+  "fitness": 0.027,
+  "cell": null,
+  "aois_scored": [
+    "chinatown",
+    "brighton",
+    "grove_hall"
+  ],
+  "timestamp_utc": "20260823T050245Z",
+  "model": "claude-sonnet-4-6",
+  "score_json_path": "/Users/rreger-mbp-26/Downloads/Projects/SHADE/runs/evolve_20260823T045409Z/score_gen03_1dd7db33"
+}

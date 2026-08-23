@@ -1,0 +1,352 @@
+[
+  {
+    "id": "gen47_6daffb24",
+    "generation": 47,
+    "policy_name": "synergy-triple-shade corridors v1",
+    "description": "Maximise heat_relief_c via three-tier shade deployment with synergy-based ",
+    "model": "claude-sonnet-4-6",
+    "objectives": {
+      "heat_relief_c": 0.0323,
+      "access_gain_pp": 0.4583,
+      "equity_ratio": 1.7236,
+      "cobenefit_greened_pct": 0.2213,
+      "cost_efficiency_person_c_per_100k": 49.15,
+      "spend_usd": 1488336.0,
+      "per_aoi_heat_relief_c": {
+        "chinatown": 0.019,
+        "brighton": 0.039,
+        "grove_hall": 0.039
+      }
+    },
+    "validation_objectives": {
+      "heat_relief_c": 0.0305,
+      "equity_ratio": 1.6767,
+      "access_gain_pp": 0.1136,
+      "cost_efficiency_person_c_per_100k": 45.5,
+      "cobenefit_greened_pct": 0.2027
+    },
+    "stakeholder": {
+      "stakeholder": "Boston Public Health Commission",
+      "rationale": "Maximizes the number of residents moved below heat stress thresholds while delivering strong equity \u2014 vulnerable populations are the ones most at risk of heat-related illness and death. Highest equity ratio (1.68) among top-relief policies ensures interventions reach the neighborhoods that need them most.",
+      "weights": {
+        "access_gain_pp": 0.35,
+        "heat_relief_c": 0.3,
+        "equity_ratio": 0.25,
+        "cost_efficiency_person_c_per_100k": 0.05,
+        "cobenefit_greened_pct": 0.05
+      }
+    },
+    "lineage": [
+      {
+        "id": "gen47_6daffb24",
+        "generation": 47,
+        "policy_name": "synergy-triple-shade corridors v1",
+        "fitness": 0.0323,
+        "description": "Maximise heat_relief_c via three-tier shade deployment with synergy-based ",
+        "inspirations": [
+          {
+            "id": "gen33_1022f141",
+            "generation": 33,
+            "policy_name": "synergy-shade heat-equity corridors v2",
+            "fitness": 0.0313
+          },
+          {
+            "id": "gen02_5c645778",
+            "generation": 2,
+            "policy_name": "tight-tree corridors with canopy infill",
+            "fitness": 0.026
+          }
+        ]
+      },
+      {
+        "id": "gen29_3360b7e4",
+        "generation": 29,
+        "policy_name": "dense-shade corridors v2",
+        "fitness": 0.026,
+        "description": "Maximise heat_relief_c via aggressive shade deployment: ",
+        "inspirations": [
+          {
+            "id": "gen02_5c645778",
+            "generation": 2,
+            "policy_name": "tight-tree corridors with canopy infill",
+            "fitness": 0.026
+          },
+          {
+            "id": "gen28_9d08d3cb",
+            "generation": 28,
+            "policy_name": "equity-heat medium tree corridors v2",
+            "fitness": 0.023
+          }
+        ]
+      },
+      {
+        "id": "gen21_60cc7c52",
+        "generation": 21,
+        "policy_name": "triple-action heat-equity corridors v1",
+        "fitness": 0.0293,
+        "description": "Maximise heat_relief_c (population-weighted UTCI drop) with a triple-action ",
+        "inspirations": [
+          {
+            "id": "gen09_c7e2c15b",
+            "generation": 9,
+            "policy_name": "dual-tree shade corridors v2",
+            "fitness": 0.029
+          },
+          {
+            "id": "gen03_1dd7db33",
+            "generation": 3,
+            "policy_name": "heat-first medium trees with canopy infill v2",
+            "fitness": 0.027
+          }
+        ]
+      },
+      {
+        "id": "gen02_5c645778",
+        "generation": 2,
+        "policy_name": "tight-tree corridors with canopy infill",
+        "fitness": 0.026,
+        "description": "Build a heat \u00d7 heat-hours \u00d7 vulnerability \u00d7 population priority surface ",
+        "inspirations": [
+          {
+            "id": "gen01_f854af82",
+            "generation": 1,
+            "policy_name": "dense-small-tree equity corridors",
+            "fitness": 0.0253
+          }
+        ]
+      },
+      {
+        "id": "gen00_seed",
+        "generation": 0,
+        "policy_name": "hot-corridor trees, then canopies",
+        "fitness": 0.0293,
+        "description": "Rank pedestrian space by heat, vulnerability and footfall; plant medium ",
+        "inspirations": []
+      }
+    ]
+  },
+  {
+    "id": "gen73_10d1ce72",
+    "generation": 73,
+    "policy_name": "synergy-equity-greening dense v2",
+    "description": "Cell (1,0,0,1): equity_ratio>=1, cobenefit_greened_pct>=0.1976, ",
+    "model": "claude-sonnet-4-6",
+    "objectives": {
+      "heat_relief_c": 0.0277,
+      "access_gain_pp": 0.1782,
+      "equity_ratio": 1.7028,
+      "cobenefit_greened_pct": 0.3153,
+      "cost_efficiency_person_c_per_100k": 42.02,
+      "spend_usd": 1499490.0,
+      "per_aoi_heat_relief_c": {
+        "chinatown": 0.0175,
+        "brighton": 0.0335,
+        "grove_hall": 0.032
+      }
+    },
+    "validation_objectives": {
+      "heat_relief_c": 0.0292,
+      "equity_ratio": 1.5184,
+      "access_gain_pp": 0.1065,
+      "cost_efficiency_person_c_per_100k": 43.81,
+      "cobenefit_greened_pct": 0.291
+    },
+    "stakeholder": {
+      "stakeholder": "Environmental Justice Advocate (e.g. GreenRoots, ACE)",
+      "rationale": "Highest greening co-benefit (0.29) combined with strong equity (1.52). Trees and green space are permanent community assets that deliver benefits beyond heat \u2014 air quality, stormwater management, mental health, property stabilization. For communities that have been disproportionately burdened by environmental harm, temporary fixes are not enough; equitable, lasting green infrastructure is the priority.",
+      "weights": {
+        "equity_ratio": 0.4,
+        "cobenefit_greened_pct": 0.25,
+        "heat_relief_c": 0.2,
+        "access_gain_pp": 0.1,
+        "cost_efficiency_person_c_per_100k": 0.05
+      }
+    },
+    "lineage": [
+      {
+        "id": "gen73_10d1ce72",
+        "generation": 73,
+        "policy_name": "synergy-equity-greening dense v2",
+        "fitness": 0.0277,
+        "description": "Cell (1,0,0,1): equity_ratio>=1, cobenefit_greened_pct>=0.1976, ",
+        "inspirations": [
+          {
+            "id": "gen60_980daac3",
+            "generation": 60,
+            "policy_name": "dense-synergy-corridors no-equity-boost v1",
+            "fitness": 0.0342
+          },
+          {
+            "id": "gen25_e257ea3f",
+            "generation": 25,
+            "policy_name": "dense-triple-action heat-population v4",
+            "fitness": 0.0303
+          }
+        ]
+      },
+      {
+        "id": "gen72_a9355d37",
+        "generation": 72,
+        "policy_name": "synergy-equity dense corridors v1",
+        "fitness": 0.026,
+        "description": "Combines the high-fitness dense synergy approach (3m medium tree spacing, ",
+        "inspirations": [
+          {
+            "id": "gen50_2931c524",
+            "generation": 50,
+            "policy_name": "synergy-corridor heat-equity v1",
+            "fitness": 0.0263
+          },
+          {
+            "id": "gen60_980daac3",
+            "generation": 60,
+            "policy_name": "dense-synergy-corridors no-equity-boost v1",
+            "fitness": 0.0342
+          }
+        ]
+      },
+      {
+        "id": "gen01_f854af82",
+        "generation": 1,
+        "policy_name": "dense-small-tree equity corridors",
+        "fitness": 0.0253,
+        "description": "Build a heat \u00d7 vulnerability \u00d7 population priority surface, then fill ",
+        "inspirations": []
+      },
+      {
+        "id": "gen00_seed",
+        "generation": 0,
+        "policy_name": "hot-corridor trees, then canopies",
+        "fitness": 0.0293,
+        "description": "Rank pedestrian space by heat, vulnerability and footfall; plant medium ",
+        "inspirations": []
+      }
+    ]
+  },
+  {
+    "id": "gen99_33e4e664",
+    "generation": 99,
+    "policy_name": "dense-synergy-tight-trees no-equity v2",
+    "description": "Maximise heat_relief_c in cell (0,1,1,0): low equity_ratio, high ",
+    "model": "claude-sonnet-4-6",
+    "objectives": {
+      "heat_relief_c": 0.0343,
+      "access_gain_pp": 0.2745,
+      "equity_ratio": 1.0398,
+      "cobenefit_greened_pct": 0.2173,
+      "cost_efficiency_person_c_per_100k": 54.29,
+      "spend_usd": 1495716.0,
+      "per_aoi_heat_relief_c": {
+        "chinatown": 0.0345,
+        "brighton": 0.032,
+        "grove_hall": 0.0365
+      }
+    },
+    "validation_objectives": {
+      "heat_relief_c": 0.0328,
+      "equity_ratio": 1.0754,
+      "access_gain_pp": 0.1273,
+      "cost_efficiency_person_c_per_100k": 50.58,
+      "cobenefit_greened_pct": 0.2019
+    },
+    "stakeholder": {
+      "stakeholder": "City Chief Financial Officer",
+      "rationale": "Maximum heat relief per dollar spent (50.58 person-degC per $100k), the highest absolute relief (0.0328\u00b0C), and the most residents moved below the stress threshold (0.1273). This is the policy that makes the strongest case in a budget hearing: every dollar produces measurable, defensible impact. Equity is lower (1.08) but still above 1.0, meaning vulnerable communities still benefit proportionally.",
+      "weights": {
+        "cost_efficiency_person_c_per_100k": 0.35,
+        "heat_relief_c": 0.3,
+        "access_gain_pp": 0.2,
+        "equity_ratio": 0.1,
+        "cobenefit_greened_pct": 0.05
+      }
+    },
+    "lineage": [
+      {
+        "id": "gen99_33e4e664",
+        "generation": 99,
+        "policy_name": "dense-synergy-tight-trees no-equity v2",
+        "fitness": 0.0343,
+        "description": "Maximise heat_relief_c in cell (0,1,1,0): low equity_ratio, high ",
+        "inspirations": [
+          {
+            "id": "gen50_2931c524",
+            "generation": 50,
+            "policy_name": "synergy-corridor heat-equity v1",
+            "fitness": 0.0263
+          },
+          {
+            "id": "gen60_980daac3",
+            "generation": 60,
+            "policy_name": "dense-synergy-corridors no-equity-boost v1",
+            "fitness": 0.0342
+          }
+        ]
+      },
+      {
+        "id": "gen13_b4c81ffa",
+        "generation": 13,
+        "policy_name": "dense-corridor dual-tree canopy v3",
+        "fitness": 0.0297,
+        "description": "Maximise population-weighted UTCI relief via three-phase shading: ",
+        "inspirations": [
+          {
+            "id": "gen05_ef962afb",
+            "generation": 5,
+            "policy_name": "population-heat max shade v2",
+            "fitness": 0.024
+          },
+          {
+            "id": "gen00_seed",
+            "generation": 0,
+            "policy_name": "hot-corridor trees, then canopies",
+            "fitness": 0.0293
+          }
+        ]
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "generation": 3,
+        "policy_name": "heat-first medium trees with canopy infill v2",
+        "fitness": 0.027,
+        "description": "Maximise UTCI relief by aggressively targeting the hottest pedestrian ",
+        "inspirations": [
+          {
+            "id": "gen00_seed",
+            "generation": 0,
+            "policy_name": "hot-corridor trees, then canopies",
+            "fitness": 0.0293
+          },
+          {
+            "id": "gen01_f854af82",
+            "generation": 1,
+            "policy_name": "dense-small-tree equity corridors",
+            "fitness": 0.0253
+          }
+        ]
+      },
+      {
+        "id": "gen02_5c645778",
+        "generation": 2,
+        "policy_name": "tight-tree corridors with canopy infill",
+        "fitness": 0.026,
+        "description": "Build a heat \u00d7 heat-hours \u00d7 vulnerability \u00d7 population priority surface ",
+        "inspirations": [
+          {
+            "id": "gen01_f854af82",
+            "generation": 1,
+            "policy_name": "dense-small-tree equity corridors",
+            "fitness": 0.0253
+          }
+        ]
+      },
+      {
+        "id": "gen00_seed",
+        "generation": 0,
+        "policy_name": "hot-corridor trees, then canopies",
+        "fitness": 0.0293,
+        "description": "Rank pedestrian space by heat, vulnerability and footfall; plant medium ",
+        "inspirations": []
+      }
+    ]
+  }
+]

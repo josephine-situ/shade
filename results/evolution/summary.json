@@ -1,0 +1,1186 @@
+{
+  "run_dir": "runs/evolve_20260823T045409Z",
+  "aois": [
+    "chinatown",
+    "brighton",
+    "grove_hall"
+  ],
+  "budget_usd": 500000.0,
+  "model": "claude-sonnet-4-6",
+  "generations": 40,
+  "seed_generations": 5,
+  "total_candidates": 101,
+  "feasible_count": 101,
+  "best_id": "gen88_2812414b",
+  "best_fitness": 0.0348,
+  "best_policy_name": "dense-synergy-medium-canopy v1",
+  "all_fitness": [
+    {
+      "id": "gen00_seed",
+      "gen": 0,
+      "fitness": 0.0293,
+      "verdict": "feasible",
+      "policy_name": "hot-corridor trees, then canopies"
+    },
+    {
+      "id": "gen01_f854af82",
+      "gen": 1,
+      "fitness": 0.0253,
+      "verdict": "feasible",
+      "policy_name": "dense-small-tree equity corridors"
+    },
+    {
+      "id": "gen02_5c645778",
+      "gen": 2,
+      "fitness": 0.026,
+      "verdict": "feasible",
+      "policy_name": "tight-tree corridors with canopy infill"
+    },
+    {
+      "id": "gen03_1dd7db33",
+      "gen": 3,
+      "fitness": 0.027,
+      "verdict": "feasible",
+      "policy_name": "heat-first medium trees with canopy infill v2"
+    },
+    {
+      "id": "gen04_9c03819a",
+      "gen": 4,
+      "fitness": 0.0283,
+      "verdict": "feasible",
+      "policy_name": "population-heat dense corridors v1"
+    },
+    {
+      "id": "gen05_ef962afb",
+      "gen": 5,
+      "fitness": 0.024,
+      "verdict": "feasible",
+      "policy_name": "population-heat max shade v2"
+    },
+    {
+      "id": "gen06_8ed945b1",
+      "gen": 6,
+      "fitness": 0.028,
+      "verdict": "feasible",
+      "policy_name": "aggressive-tree corridors equity-boosted v2"
+    },
+    {
+      "id": "gen07_48e90785",
+      "gen": 7,
+      "fitness": 0.0283,
+      "verdict": "feasible",
+      "policy_name": "equity-first dense shade corridors v1"
+    },
+    {
+      "id": "gen08_8599072a",
+      "gen": 8,
+      "fitness": 0.0283,
+      "verdict": "feasible",
+      "policy_name": "equity-heat corridors optimal spacing v1"
+    },
+    {
+      "id": "gen09_c7e2c15b",
+      "gen": 9,
+      "fitness": 0.029,
+      "verdict": "feasible",
+      "policy_name": "dual-tree shade corridors v2"
+    },
+    {
+      "id": "gen100_908f8f4e",
+      "gen": 100,
+      "fitness": 0.0318,
+      "verdict": "feasible",
+      "policy_name": "synergy-corridor tight-grid v1"
+    },
+    {
+      "id": "gen10_91ed5239",
+      "gen": 10,
+      "fitness": 0.027,
+      "verdict": "feasible",
+      "policy_name": "population-heat dense shade v3"
+    },
+    {
+      "id": "gen11_e557bd34",
+      "gen": 11,
+      "fitness": 0.0283,
+      "verdict": "feasible",
+      "policy_name": "heat-first medium trees with canopy infill v3"
+    },
+    {
+      "id": "gen12_4819a00e",
+      "gen": 12,
+      "fitness": 0.023,
+      "verdict": "feasible",
+      "policy_name": "heat-first hybrid trees canopy v3"
+    },
+    {
+      "id": "gen13_b4c81ffa",
+      "gen": 13,
+      "fitness": 0.0297,
+      "verdict": "feasible",
+      "policy_name": "dense-corridor dual-tree canopy v3"
+    },
+    {
+      "id": "gen14_36a5414e",
+      "gen": 14,
+      "fitness": 0.0217,
+      "verdict": "feasible",
+      "policy_name": "equity-heat dual-tree dense v1"
+    },
+    {
+      "id": "gen15_be7386e4",
+      "gen": 15,
+      "fitness": 0.0273,
+      "verdict": "feasible",
+      "policy_name": "population-weighted shade maximizer v1"
+    },
+    {
+      "id": "gen16_09da8a87",
+      "gen": 16,
+      "fitness": 0.0293,
+      "verdict": "feasible",
+      "policy_name": "ultra-dense corridor triple-phase v1"
+    },
+    {
+      "id": "gen17_33ff1861",
+      "gen": 17,
+      "fitness": 0.0233,
+      "verdict": "feasible",
+      "policy_name": "dual-tier-tree dense shade v1"
+    },
+    {
+      "id": "gen18_944476a5",
+      "gen": 18,
+      "fitness": 0.028,
+      "verdict": "feasible",
+      "policy_name": "equity-weighted dual-tree canopy v1"
+    },
+    {
+      "id": "gen19_6f0feb02",
+      "gen": 19,
+      "fitness": 0.0243,
+      "verdict": "feasible",
+      "policy_name": "heat-population dual-tree canopy v1"
+    },
+    {
+      "id": "gen20_e4c49461",
+      "gen": 20,
+      "fitness": 0.0293,
+      "verdict": "feasible",
+      "policy_name": "dense-shade max-coverage v4"
+    },
+    {
+      "id": "gen21_60cc7c52",
+      "gen": 21,
+      "fitness": 0.0293,
+      "verdict": "feasible",
+      "policy_name": "triple-action heat-equity corridors v1"
+    },
+    {
+      "id": "gen22_3d5a4dc9",
+      "gen": 22,
+      "fitness": 0.0287,
+      "verdict": "feasible",
+      "policy_name": "triple-action heat-equity corridors v2"
+    },
+    {
+      "id": "gen23_5f869e66",
+      "gen": 23,
+      "fitness": 0.028,
+      "verdict": "feasible",
+      "policy_name": "quad-action dense-shade equity corridors"
+    },
+    {
+      "id": "gen24_51cc8b1c",
+      "gen": 24,
+      "fitness": 0.0233,
+      "verdict": "feasible",
+      "policy_name": "population-weighted shade maximizer v2"
+    },
+    {
+      "id": "gen25_e257ea3f",
+      "gen": 25,
+      "fitness": 0.0303,
+      "verdict": "feasible",
+      "policy_name": "dense-triple-action heat-population v4"
+    },
+    {
+      "id": "gen26_f2b35250",
+      "gen": 26,
+      "fitness": 0.0207,
+      "verdict": "feasible",
+      "policy_name": "equity-weighted dense medium tree corridors v2"
+    },
+    {
+      "id": "gen27_8e50d0a9",
+      "gen": 27,
+      "fitness": 0.0277,
+      "verdict": "feasible",
+      "policy_name": "dense-shade priority corridors v5"
+    },
+    {
+      "id": "gen28_9d08d3cb",
+      "gen": 28,
+      "fitness": 0.023,
+      "verdict": "feasible",
+      "policy_name": "equity-heat medium tree corridors v2"
+    },
+    {
+      "id": "gen29_3360b7e4",
+      "gen": 29,
+      "fitness": 0.026,
+      "verdict": "feasible",
+      "policy_name": "dense-shade corridors v2"
+    },
+    {
+      "id": "gen30_6b7f0848",
+      "gen": 30,
+      "fitness": 0.0293,
+      "verdict": "feasible",
+      "policy_name": "heat-population-equity triple-action v2"
+    },
+    {
+      "id": "gen31_7a45f7f4",
+      "gen": 31,
+      "fitness": 0.0243,
+      "verdict": "feasible",
+      "policy_name": "heat-population corridors v2"
+    },
+    {
+      "id": "gen32_0e07013d",
+      "gen": 32,
+      "fitness": 0.0283,
+      "verdict": "feasible",
+      "policy_name": "dense-corridor trees-canopy-grass v4"
+    },
+    {
+      "id": "gen33_1022f141",
+      "gen": 33,
+      "fitness": 0.0313,
+      "verdict": "feasible",
+      "policy_name": "synergy-shade heat-equity corridors v2"
+    },
+    {
+      "id": "gen34_dcbcc10c",
+      "gen": 34,
+      "fitness": 0.0297,
+      "verdict": "feasible",
+      "policy_name": "synergy-medium-tree corridors v2"
+    },
+    {
+      "id": "gen35_a93aeecc",
+      "gen": 35,
+      "fitness": 0.0283,
+      "verdict": "feasible",
+      "policy_name": "synergy-corridors heat-equity v2"
+    },
+    {
+      "id": "gen36_ce9aa91e",
+      "gen": 36,
+      "fitness": 0.0227,
+      "verdict": "feasible",
+      "policy_name": "synergy-triple-shade heat-equity v3"
+    },
+    {
+      "id": "gen37_133c6985",
+      "gen": 37,
+      "fitness": 0.0313,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity dense-medium tree corridors v2"
+    },
+    {
+      "id": "gen38_5fdf8444",
+      "gen": 38,
+      "fitness": 0.022,
+      "verdict": "feasible",
+      "policy_name": "synergy-shade equity corridors v3"
+    },
+    {
+      "id": "gen39_59354985",
+      "gen": 39,
+      "fitness": 0.031,
+      "verdict": "feasible",
+      "policy_name": "synergy-triple-action greened corridors v1"
+    },
+    {
+      "id": "gen40_fcc1abee",
+      "gen": 40,
+      "fitness": 0.031,
+      "verdict": "feasible",
+      "policy_name": "synergy-triple-green canopy v1"
+    },
+    {
+      "id": "gen41_25be404f",
+      "gen": 41,
+      "fitness": 0.025,
+      "verdict": "feasible",
+      "policy_name": "heat-population corridors v3"
+    },
+    {
+      "id": "gen42_d9762d81",
+      "gen": 42,
+      "fitness": 0.0317,
+      "verdict": "feasible",
+      "policy_name": "heat-population synergy corridors v1"
+    },
+    {
+      "id": "gen43_7fd09640",
+      "gen": 43,
+      "fitness": 0.023,
+      "verdict": "feasible",
+      "policy_name": "equity-medium-tree heat corridors v1"
+    },
+    {
+      "id": "gen44_14d478ef",
+      "gen": 44,
+      "fitness": 0.024,
+      "verdict": "feasible",
+      "policy_name": "synergy-dense shade corridors v1"
+    },
+    {
+      "id": "gen45_9e5c6233",
+      "gen": 45,
+      "fitness": 0.0213,
+      "verdict": "feasible",
+      "policy_name": "max-canopy-density synergy v3"
+    },
+    {
+      "id": "gen46_89acb25a",
+      "gen": 46,
+      "fitness": 0.0307,
+      "verdict": "feasible",
+      "policy_name": "synergy-heat corridors tight v1"
+    },
+    {
+      "id": "gen47_6daffb24",
+      "gen": 47,
+      "fitness": 0.0323,
+      "verdict": "feasible",
+      "policy_name": "synergy-triple-shade corridors v1"
+    },
+    {
+      "id": "gen48_88cfd8bb",
+      "gen": 48,
+      "fitness": 0.03,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity corridors v2"
+    },
+    {
+      "id": "gen49_2cc1d876",
+      "gen": 49,
+      "fitness": 0.0323,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity corridors v1"
+    },
+    {
+      "id": "gen50_2931c524",
+      "gen": 50,
+      "fitness": 0.0263,
+      "verdict": "feasible",
+      "policy_name": "synergy-corridor heat-equity v1"
+    },
+    {
+      "id": "gen51_d795757b",
+      "gen": 51,
+      "fitness": 0.0215,
+      "verdict": "feasible",
+      "policy_name": "equity-heat triple-action corridors v1"
+    },
+    {
+      "id": "gen52_3861dac5",
+      "gen": 52,
+      "fitness": 0.0222,
+      "verdict": "feasible",
+      "policy_name": "synergy-shade equity corridors v2"
+    },
+    {
+      "id": "gen53_90495443",
+      "gen": 53,
+      "fitness": 0.0262,
+      "verdict": "feasible",
+      "policy_name": "synergy-canopy-focus heat-equity v1"
+    },
+    {
+      "id": "gen54_7302170f",
+      "gen": 54,
+      "fitness": 0.0165,
+      "verdict": "feasible",
+      "policy_name": "equity-efficiency canopy optimizer v1"
+    },
+    {
+      "id": "gen55_f7f9fd75",
+      "gen": 55,
+      "fitness": 0.0278,
+      "verdict": "feasible",
+      "policy_name": "tight-corridor medium-tree canopy equity v1"
+    },
+    {
+      "id": "gen56_d004b362",
+      "gen": 56,
+      "fitness": 0.0263,
+      "verdict": "feasible",
+      "policy_name": "dense-shade-synergy v2"
+    },
+    {
+      "id": "gen57_cc15d600",
+      "gen": 57,
+      "fitness": 0.0228,
+      "verdict": "feasible",
+      "policy_name": "synergy-max shade corridors v2"
+    },
+    {
+      "id": "gen58_f0386ce7",
+      "gen": 58,
+      "fitness": 0.0268,
+      "verdict": "feasible",
+      "policy_name": "synergy-corridor heat-equity v2"
+    },
+    {
+      "id": "gen59_3cb50baa",
+      "gen": 59,
+      "fitness": 0.022,
+      "verdict": "feasible",
+      "policy_name": "equity-synergy medium-tree canopy v1"
+    },
+    {
+      "id": "gen60_980daac3",
+      "gen": 60,
+      "fitness": 0.0342,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors no-equity-boost v1"
+    },
+    {
+      "id": "gen61_d0f608ea",
+      "gen": 61,
+      "fitness": 0.033,
+      "verdict": "feasible",
+      "policy_name": "equity-synergy-corridors v1"
+    },
+    {
+      "id": "gen62_7a773180",
+      "gen": 62,
+      "fitness": 0.0272,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity-greening corridors v1"
+    },
+    {
+      "id": "gen63_178e7694",
+      "gen": 63,
+      "fitness": 0.0275,
+      "verdict": "feasible",
+      "policy_name": "ultra-dense-synergy corridors v2"
+    },
+    {
+      "id": "gen64_ccc46461",
+      "gen": 64,
+      "fitness": 0.0235,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity-corridors v2"
+    },
+    {
+      "id": "gen65_b4700abb",
+      "gen": 65,
+      "fitness": 0.025,
+      "verdict": "feasible",
+      "policy_name": "synergy-dense-tree equity-boost v2"
+    },
+    {
+      "id": "gen66_47cdd9b3",
+      "gen": 66,
+      "fitness": 0.033,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity-corridors v2"
+    },
+    {
+      "id": "gen67_23fbd697",
+      "gen": 67,
+      "fitness": 0.0252,
+      "verdict": "feasible",
+      "policy_name": "dense-medium-tree synergy equity v2"
+    },
+    {
+      "id": "gen68_bb28570c",
+      "gen": 68,
+      "fitness": 0.0268,
+      "verdict": "feasible",
+      "policy_name": "tight-3m-synergy equity-boost v2"
+    },
+    {
+      "id": "gen69_b576f87f",
+      "gen": 69,
+      "fitness": 0.0237,
+      "verdict": "feasible",
+      "policy_name": "synergy-shade-corridors-v3"
+    },
+    {
+      "id": "gen70_4fc9b144",
+      "gen": 70,
+      "fitness": 0.0275,
+      "verdict": "feasible",
+      "policy_name": "quad-optimised shade corridors v1"
+    },
+    {
+      "id": "gen71_4b840b04",
+      "gen": 71,
+      "fitness": 0.0197,
+      "verdict": "feasible",
+      "policy_name": "synergy-shade-equity corridors v1"
+    },
+    {
+      "id": "gen72_a9355d37",
+      "gen": 72,
+      "fitness": 0.026,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity dense corridors v1"
+    },
+    {
+      "id": "gen73_10d1ce72",
+      "gen": 73,
+      "fitness": 0.0277,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity-greening dense v2"
+    },
+    {
+      "id": "gen74_08a27b93",
+      "gen": 74,
+      "fitness": 0.0177,
+      "verdict": "feasible",
+      "policy_name": "dense-shade-synergy corridors v2"
+    },
+    {
+      "id": "gen75_174bdb13",
+      "gen": 75,
+      "fitness": 0.021,
+      "verdict": "feasible",
+      "policy_name": "dense-triple-equity-greening v1"
+    },
+    {
+      "id": "gen76_3d6773c7",
+      "gen": 76,
+      "fitness": 0.0267,
+      "verdict": "feasible",
+      "policy_name": "synergy-corridor heat-equity v2"
+    },
+    {
+      "id": "gen77_be1b51ad",
+      "gen": 77,
+      "fitness": 0.0293,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-equity-corridors v2"
+    },
+    {
+      "id": "gen78_b85691b2",
+      "gen": 78,
+      "fitness": 0.0303,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-equity-boost v2"
+    },
+    {
+      "id": "gen79_e726b247",
+      "gen": 79,
+      "fitness": 0.028,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity-triple-shade v2"
+    },
+    {
+      "id": "gen80_bd9e482d",
+      "gen": 80,
+      "fitness": 0.0252,
+      "verdict": "feasible",
+      "policy_name": "dense-shade corridors v3"
+    },
+    {
+      "id": "gen81_3ecd26df",
+      "gen": 81,
+      "fitness": 0.0213,
+      "verdict": "feasible",
+      "policy_name": "ultra-dense synergy corridors v1"
+    },
+    {
+      "id": "gen82_d47ae0ad",
+      "gen": 82,
+      "fitness": 0.024,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors equity-boost v1"
+    },
+    {
+      "id": "gen83_a9576d4e",
+      "gen": 83,
+      "fitness": 0.0277,
+      "verdict": "feasible",
+      "policy_name": "dense-equity-shade corridors v1"
+    },
+    {
+      "id": "gen84_9e130429",
+      "gen": 84,
+      "fitness": 0.0267,
+      "verdict": "feasible",
+      "policy_name": "max-shade-medium-tree-focus v1"
+    },
+    {
+      "id": "gen85_837d7ccd",
+      "gen": 85,
+      "fitness": 0.028,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors v2 ultra-tight"
+    },
+    {
+      "id": "gen86_44b7cc49",
+      "gen": 86,
+      "fitness": 0.0297,
+      "verdict": "feasible",
+      "policy_name": "aggressive-shade-corridors equity-lite v1"
+    },
+    {
+      "id": "gen87_04aaa95d",
+      "gen": 87,
+      "fitness": 0.0187,
+      "verdict": "feasible",
+      "policy_name": "equity-solar-canopy corridors v1"
+    },
+    {
+      "id": "gen88_2812414b",
+      "gen": 88,
+      "fitness": 0.0348,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-medium-canopy v1"
+    },
+    {
+      "id": "gen89_049ddbf0",
+      "gen": 89,
+      "fitness": 0.0312,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors v2"
+    },
+    {
+      "id": "gen90_2d79268a",
+      "gen": 90,
+      "fitness": 0.03,
+      "verdict": "feasible",
+      "policy_name": "synergy-dense-medium-canopy v4"
+    },
+    {
+      "id": "gen91_b4ca9b02",
+      "gen": 91,
+      "fitness": 0.0272,
+      "verdict": "feasible",
+      "policy_name": "synergy-equity-greened corridors v3"
+    },
+    {
+      "id": "gen92_854d4843",
+      "gen": 92,
+      "fitness": 0.0267,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-max-trees v2"
+    },
+    {
+      "id": "gen93_2f449e97",
+      "gen": 93,
+      "fitness": 0.0217,
+      "verdict": "feasible",
+      "policy_name": "equity-dense-shade-greening v1"
+    },
+    {
+      "id": "gen94_ee32eacb",
+      "gen": 94,
+      "fitness": 0.0287,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors v2 optimized"
+    },
+    {
+      "id": "gen95_6c681717",
+      "gen": 95,
+      "fitness": 0.0258,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors v2 improved"
+    },
+    {
+      "id": "gen96_e3bb052a",
+      "gen": 96,
+      "fitness": 0.0217,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-corridors equity-greened v2"
+    },
+    {
+      "id": "gen97_4aabc715",
+      "gen": 97,
+      "fitness": 0.0215,
+      "verdict": "feasible",
+      "policy_name": "synergy-corridor heat-equity v3"
+    },
+    {
+      "id": "gen98_53c555b9",
+      "gen": 98,
+      "fitness": 0.023,
+      "verdict": "feasible",
+      "policy_name": "dense-medium-tree-v2 cell(1,0,0,0)"
+    },
+    {
+      "id": "gen99_33e4e664",
+      "gen": 99,
+      "fitness": 0.0343,
+      "verdict": "feasible",
+      "policy_name": "dense-synergy-tight-trees no-equity v2"
+    }
+  ],
+  "map_elites": {
+    "thresholds": {
+      "equity_ratio": 1.0,
+      "access_gain_pp": 0.32315000000000005,
+      "cost_efficiency_person_c_per_100k": 40.555,
+      "cobenefit_greened_pct": 0.19765
+    },
+    "axes": [
+      "equity_ratio",
+      "access_gain_pp",
+      "cost_efficiency_person_c_per_100k",
+      "cobenefit_greened_pct"
+    ],
+    "occupied_cells": 12,
+    "total_cells": 16,
+    "grid": {
+      "(0, 0, 1, 0)": {
+        "fitness": 0.0348,
+        "id": "gen88_2812414b",
+        "policy_name": "dense-synergy-medium-canopy v1"
+      },
+      "(0, 0, 1, 1)": {
+        "fitness": 0.033,
+        "id": "gen61_d0f608ea",
+        "policy_name": "equity-synergy-corridors v1"
+      },
+      "(0, 1, 1, 0)": {
+        "fitness": 0.0297,
+        "id": "gen13_b4c81ffa",
+        "policy_name": "dense-corridor dual-tree canopy v3"
+      },
+      "(0, 1, 1, 1)": {
+        "fitness": 0.0317,
+        "id": "gen42_d9762d81",
+        "policy_name": "heat-population synergy corridors v1"
+      },
+      "(1, 0, 0, 0)": {
+        "fitness": 0.0267,
+        "id": "gen84_9e130429",
+        "policy_name": "max-shade-medium-tree-focus v1"
+      },
+      "(1, 0, 0, 1)": {
+        "fitness": 0.0267,
+        "id": "gen76_3d6773c7",
+        "policy_name": "synergy-corridor heat-equity v2"
+      },
+      "(1, 0, 1, 0)": {
+        "fitness": 0.03,
+        "id": "gen90_2d79268a",
+        "policy_name": "synergy-dense-medium-canopy v4"
+      },
+      "(1, 0, 1, 1)": {
+        "fitness": 0.0343,
+        "id": "gen99_33e4e664",
+        "policy_name": "dense-synergy-tight-trees no-equity v2"
+      },
+      "(1, 1, 0, 0)": {
+        "fitness": 0.026,
+        "id": "gen29_3360b7e4",
+        "policy_name": "dense-shade corridors v2"
+      },
+      "(1, 1, 0, 1)": {
+        "fitness": 0.0263,
+        "id": "gen50_2931c524",
+        "policy_name": "synergy-corridor heat-equity v1"
+      },
+      "(1, 1, 1, 0)": {
+        "fitness": 0.0303,
+        "id": "gen25_e257ea3f",
+        "policy_name": "dense-triple-action heat-population v4"
+      },
+      "(1, 1, 1, 1)": {
+        "fitness": 0.0323,
+        "id": "gen47_6daffb24",
+        "policy_name": "synergy-triple-shade corridors v1"
+      }
+    }
+  },
+  "best_lineage": [
+    {
+      "id": "gen88_2812414b",
+      "gen": 88,
+      "fitness": 0.0348,
+      "policy_name": "dense-synergy-medium-canopy v1"
+    },
+    {
+      "id": "gen25_e257ea3f",
+      "gen": 25,
+      "fitness": 0.0303,
+      "policy_name": "dense-triple-action heat-population v4"
+    },
+    {
+      "id": "gen03_1dd7db33",
+      "gen": 3,
+      "fitness": 0.027,
+      "policy_name": "heat-first medium trees with canopy infill v2"
+    },
+    {
+      "id": "gen02_5c645778",
+      "gen": 2,
+      "fitness": 0.026,
+      "policy_name": "tight-tree corridors with canopy infill"
+    },
+    {
+      "id": "gen00_seed",
+      "gen": 0,
+      "fitness": 0.0293,
+      "policy_name": "hot-corridor trees, then canopies"
+    }
+  ],
+  "grid_lineages": {
+    "(0, 0, 1, 0)": [
+      {
+        "id": "gen88_2812414b",
+        "gen": 88,
+        "fitness": 0.0348,
+        "policy_name": "dense-synergy-medium-canopy v1"
+      },
+      {
+        "id": "gen25_e257ea3f",
+        "gen": 25,
+        "fitness": 0.0303,
+        "policy_name": "dense-triple-action heat-population v4"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(0, 0, 1, 1)": [
+      {
+        "id": "gen61_d0f608ea",
+        "gen": 61,
+        "fitness": 0.033,
+        "policy_name": "equity-synergy-corridors v1"
+      },
+      {
+        "id": "gen01_f854af82",
+        "gen": 1,
+        "fitness": 0.0253,
+        "policy_name": "dense-small-tree equity corridors"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(0, 1, 1, 0)": [
+      {
+        "id": "gen13_b4c81ffa",
+        "gen": 13,
+        "fitness": 0.0297,
+        "policy_name": "dense-corridor dual-tree canopy v3"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(0, 1, 1, 1)": [
+      {
+        "id": "gen42_d9762d81",
+        "gen": 42,
+        "fitness": 0.0317,
+        "policy_name": "heat-population synergy corridors v1"
+      },
+      {
+        "id": "gen31_7a45f7f4",
+        "gen": 31,
+        "fitness": 0.0243,
+        "policy_name": "heat-population corridors v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 0, 0, 0)": [
+      {
+        "id": "gen84_9e130429",
+        "gen": 84,
+        "fitness": 0.0267,
+        "policy_name": "max-shade-medium-tree-focus v1"
+      },
+      {
+        "id": "gen53_90495443",
+        "gen": 53,
+        "fitness": 0.0262,
+        "policy_name": "synergy-canopy-focus heat-equity v1"
+      },
+      {
+        "id": "gen25_e257ea3f",
+        "gen": 25,
+        "fitness": 0.0303,
+        "policy_name": "dense-triple-action heat-population v4"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 0, 0, 1)": [
+      {
+        "id": "gen76_3d6773c7",
+        "gen": 76,
+        "fitness": 0.0267,
+        "policy_name": "synergy-corridor heat-equity v2"
+      },
+      {
+        "id": "gen50_2931c524",
+        "gen": 50,
+        "fitness": 0.0263,
+        "policy_name": "synergy-corridor heat-equity v1"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 0, 1, 0)": [
+      {
+        "id": "gen90_2d79268a",
+        "gen": 90,
+        "fitness": 0.03,
+        "policy_name": "synergy-dense-medium-canopy v4"
+      },
+      {
+        "id": "gen13_b4c81ffa",
+        "gen": 13,
+        "fitness": 0.0297,
+        "policy_name": "dense-corridor dual-tree canopy v3"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 0, 1, 1)": [
+      {
+        "id": "gen99_33e4e664",
+        "gen": 99,
+        "fitness": 0.0343,
+        "policy_name": "dense-synergy-tight-trees no-equity v2"
+      },
+      {
+        "id": "gen13_b4c81ffa",
+        "gen": 13,
+        "fitness": 0.0297,
+        "policy_name": "dense-corridor dual-tree canopy v3"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 1, 0, 0)": [
+      {
+        "id": "gen29_3360b7e4",
+        "gen": 29,
+        "fitness": 0.026,
+        "policy_name": "dense-shade corridors v2"
+      },
+      {
+        "id": "gen21_60cc7c52",
+        "gen": 21,
+        "fitness": 0.0293,
+        "policy_name": "triple-action heat-equity corridors v1"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 1, 0, 1)": [
+      {
+        "id": "gen50_2931c524",
+        "gen": 50,
+        "fitness": 0.0263,
+        "policy_name": "synergy-corridor heat-equity v1"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 1, 1, 0)": [
+      {
+        "id": "gen25_e257ea3f",
+        "gen": 25,
+        "fitness": 0.0303,
+        "policy_name": "dense-triple-action heat-population v4"
+      },
+      {
+        "id": "gen03_1dd7db33",
+        "gen": 3,
+        "fitness": 0.027,
+        "policy_name": "heat-first medium trees with canopy infill v2"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ],
+    "(1, 1, 1, 1)": [
+      {
+        "id": "gen47_6daffb24",
+        "gen": 47,
+        "fitness": 0.0323,
+        "policy_name": "synergy-triple-shade corridors v1"
+      },
+      {
+        "id": "gen29_3360b7e4",
+        "gen": 29,
+        "fitness": 0.026,
+        "policy_name": "dense-shade corridors v2"
+      },
+      {
+        "id": "gen21_60cc7c52",
+        "gen": 21,
+        "fitness": 0.0293,
+        "policy_name": "triple-action heat-equity corridors v1"
+      },
+      {
+        "id": "gen02_5c645778",
+        "gen": 2,
+        "fitness": 0.026,
+        "policy_name": "tight-tree corridors with canopy infill"
+      },
+      {
+        "id": "gen00_seed",
+        "gen": 0,
+        "fitness": 0.0293,
+        "policy_name": "hot-corridor trees, then canopies"
+      }
+    ]
+  }
+}
