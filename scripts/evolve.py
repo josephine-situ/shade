@@ -745,132 +745,177 @@ def main() -> None:
                      help="wall-clock timeout for the scoring subprocess (default 600)")
     ap.add_argument("--seed-generations", type=int, default=5,
                      help="generations of random exploration before MAP-Elites (default 5)")
+    ap.add_argument("--resume", metavar="RUN_DIR",
+                     help="resume evolution from a previous run directory")
     ap.add_argument("--out", help="output directory (default runs/evolve_<timestamp>)")
     args = ap.parse_args()
 
     # -- setup ------------------------------------------------------------ #
     aois = [a.strip() for a in args.aois.split(",")]
-
-    seed_path = Path(args.seed_policy)
-    if not seed_path.is_absolute():
-        seed_path = ROOT / seed_path
-    if not seed_path.exists():
-        raise SystemExit(f"seed policy not found: {seed_path}")
+    n_aois = len(aois)
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    run_dir = Path(args.out) if args.out else RUNS / f"evolve_{stamp}"
-    run_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "candidates").mkdir(exist_ok=True)
-    (run_dir / "policies").mkdir(exist_ok=True)
 
-    seed_code = seed_path.read_text(encoding="utf-8")
+    # -- resume or fresh start -------------------------------------------- #
+    if args.resume:
+        run_dir = Path(args.resume)
+        if not run_dir.exists():
+            raise SystemExit(f"resume directory not found: {run_dir}")
+        existing = load_candidates(run_dir)
+        if not existing:
+            raise SystemExit(f"no candidates found in {run_dir}/candidates/")
 
-    print(f"SHADE evolution harness")
-    print(f"  run dir:      {run_dir}")
-    print(f"  aois:         {', '.join(aois)} ({len(aois)})")
-    print(f"  budget:       ${args.budget:,.0f}")
-    print(f"  generations:  {args.generations}")
-    print(f"  seed-gens:    {args.seed_generations}")
-    print(f"  model:        {args.model}")
-    print(f"  seed:         {seed_path.name}")
-    print()
+        # Find the highest generation number already completed
+        start_gen = max(c.get("generation", 0) for c in existing) + 1
+        feasible_existing = [c for c in existing if c.get("fitness") is not None]
 
-    # -- generation 0: score the seed ------------------------------------- #
-    n_aois = len(aois)
-    print(f"gen 0  scoring seed policy on {n_aois} AOI{'s' if n_aois > 1 else ''}...")
-    score_dir = run_dir / "score_gen00_seed"
+        # Rebuild thresholds if they exist
+        thresholds_path = run_dir / "thresholds.json"
+        if thresholds_path.exists():
+            thresholds = json.loads(thresholds_path.read_text(encoding="utf-8"))
+            map_elites_active = True
+        else:
+            thresholds = None
+            map_elites_active = False
 
-    if n_aois == 1:
-        result = score_candidate(
-            seed_path, aois[0], args.budget, score_dir,
-            scenarios=args.scenarios,
-            plan_timeout=args.plan_timeout,
-            score_timeout=args.score_timeout,
-        )
-        if result is None:
-            raise SystemExit("seed policy failed to score -- fix it before evolving")
-        seed_objectives = result.get("objectives")
-        seed_verdict = result.get("verdict", "unknown")
-        seed_violations = result.get("violations")
+        print(f"SHADE evolution harness (RESUMING)")
+        print(f"  run dir:      {run_dir}")
+        print(f"  resuming from gen {start_gen} ({len(existing)} candidates, "
+              f"{len(feasible_existing)} feasible)")
+        print(f"  aois:         {', '.join(aois)} ({len(aois)})")
+        print(f"  scenarios:    {args.scenarios}")
+        print(f"  budget:       ${args.budget:,.0f}")
+        print(f"  generations:  {start_gen} to {start_gen + args.generations - 1} "
+              f"({args.generations} new)")
+        print(f"  model:        {args.model}")
+        if map_elites_active:
+            grid = build_grid(existing, thresholds)
+            print(f"  MAP-Elites:   active ({len(grid)}/16 cells occupied)")
+        print()
+
+        end_gen = start_gen + args.generations
     else:
-        aoi_results = score_candidate_multi(
-            seed_path, aois, args.budget, score_dir,
-            scenarios=args.scenarios,
-            plan_timeout=args.plan_timeout,
-            score_timeout=args.score_timeout,
+        seed_path = Path(args.seed_policy)
+        if not seed_path.is_absolute():
+            seed_path = ROOT / seed_path
+        if not seed_path.exists():
+            raise SystemExit(f"seed policy not found: {seed_path}")
+
+        run_dir = Path(args.out) if args.out else RUNS / f"evolve_{stamp}"
+        run_dir.mkdir(parents=True, exist_ok=True)
+        (run_dir / "candidates").mkdir(exist_ok=True)
+        (run_dir / "policies").mkdir(exist_ok=True)
+
+        seed_code = seed_path.read_text(encoding="utf-8")
+
+        print(f"SHADE evolution harness")
+        print(f"  run dir:      {run_dir}")
+        print(f"  aois:         {', '.join(aois)} ({len(aois)})")
+        print(f"  scenarios:    {args.scenarios}")
+        print(f"  budget:       ${args.budget:,.0f}")
+        print(f"  generations:  {args.generations}")
+        print(f"  seed-gens:    {args.seed_generations}")
+        print(f"  model:        {args.model}")
+        print(f"  seed:         {seed_path.name}")
+        print()
+
+        # -- generation 0: score the seed --------------------------------- #
+        print(f"gen 0  scoring seed policy on {n_aois} AOI{'s' if n_aois > 1 else ''}...")
+        score_dir = run_dir / "score_gen00_seed"
+
+        if n_aois == 1:
+            result = score_candidate(
+                seed_path, aois[0], args.budget, score_dir,
+                scenarios=args.scenarios,
+                plan_timeout=args.plan_timeout,
+                score_timeout=args.score_timeout,
+            )
+            if result is None:
+                raise SystemExit("seed policy failed to score -- fix it before evolving")
+            seed_objectives = result.get("objectives")
+            seed_verdict = result.get("verdict", "unknown")
+            seed_violations = result.get("violations")
+        else:
+            aoi_results = score_candidate_multi(
+                seed_path, aois, args.budget, score_dir,
+                scenarios=args.scenarios,
+                plan_timeout=args.plan_timeout,
+                score_timeout=args.score_timeout,
+            )
+            failed = [(n, r) for n, r in aoi_results if r is None]
+            if failed:
+                raise SystemExit(
+                    f"seed policy failed to score on: "
+                    f"{', '.join(n for n, _ in failed)}"
+                )
+            infeasible = [
+                (n, r) for n, r in aoi_results
+                if r and r.get("verdict") != "feasible"
+            ]
+            if infeasible:
+                raise SystemExit(
+                    f"seed policy infeasible on: "
+                    f"{', '.join(n for n, _ in infeasible)}"
+                )
+            feasible_results = [
+                (n, r) for n, r in aoi_results
+                if r and r.get("verdict") == "feasible"
+            ]
+            seed_objectives = aggregate_aoi_results(feasible_results)
+            seed_verdict = "feasible"
+            seed_violations = {}
+
+        seed_fitness = (
+            seed_objectives.get("heat_relief_c") if seed_objectives else None
         )
-        failed = [(n, r) for n, r in aoi_results if r is None]
-        if failed:
-            raise SystemExit(
-                f"seed policy failed to score on: "
-                f"{', '.join(n for n, _ in failed)}"
-            )
-        infeasible = [
-            (n, r) for n, r in aoi_results
-            if r and r.get("verdict") != "feasible"
-        ]
-        if infeasible:
-            raise SystemExit(
-                f"seed policy infeasible on: "
-                f"{', '.join(n for n, _ in infeasible)}"
-            )
-        feasible_results = [
-            (n, r) for n, r in aoi_results
-            if r and r.get("verdict") == "feasible"
-        ]
-        seed_objectives = aggregate_aoi_results(feasible_results)
-        seed_verdict = "feasible"
-        seed_violations = {}
 
-    seed_fitness = (
-        seed_objectives.get("heat_relief_c") if seed_objectives else None
-    )
-
-    # Extract POLICY_NAME and DESCRIPTION from seed code
-    seed_name = "baseline"
-    seed_desc = ""
-    name_match = re.search(r'POLICY_NAME\s*=\s*["\'](.+?)["\']', seed_code)
-    if name_match:
-        seed_name = name_match.group(1)
-    desc_match = re.search(r'DESCRIPTION\s*=\s*\(\s*["\'](.+?)["\']', seed_code, re.DOTALL)
-    if desc_match:
-        seed_desc = desc_match.group(1)
-    else:
-        desc_match = re.search(r'DESCRIPTION\s*=\s*["\'](.+?)["\']', seed_code)
+        # Extract POLICY_NAME and DESCRIPTION from seed code
+        seed_name = "baseline"
+        seed_desc = ""
+        name_match = re.search(r'POLICY_NAME\s*=\s*["\'](.+?)["\']', seed_code)
+        if name_match:
+            seed_name = name_match.group(1)
+        desc_match = re.search(r'DESCRIPTION\s*=\s*\(\s*["\'](.+?)["\']', seed_code, re.DOTALL)
         if desc_match:
             seed_desc = desc_match.group(1)
+        else:
+            desc_match = re.search(r'DESCRIPTION\s*=\s*["\'](.+?)["\']', seed_code)
+            if desc_match:
+                seed_desc = desc_match.group(1)
 
-    seed_candidate = {
-        "id": "gen00_seed",
-        "generation": 0,
-        "parent_id": None,
-        "inspiration_ids": [],
-        "policy_name": seed_name,
-        "description": seed_desc,
-        "code": seed_code,
-        "verdict": seed_verdict,
-        "objectives": seed_objectives,
-        "violations": seed_violations,
-        "fitness": seed_fitness,
-        "aois_scored": aois,
-        "timestamp_utc": stamp,
-        "model": "seed",
-    }
-    save_candidate(run_dir, seed_candidate)
+        seed_candidate = {
+            "id": "gen00_seed",
+            "generation": 0,
+            "parent_id": None,
+            "inspiration_ids": [],
+            "policy_name": seed_name,
+            "description": seed_desc,
+            "code": seed_code,
+            "verdict": seed_verdict,
+            "objectives": seed_objectives,
+            "violations": seed_violations,
+            "fitness": seed_fitness,
+            "aois_scored": aois,
+            "timestamp_utc": stamp,
+            "model": "seed",
+        }
+        save_candidate(run_dir, seed_candidate)
 
-    print(f"gen 0  {seed_verdict}  fitness={seed_fitness}")
-    if seed_fitness is None:
-        print("  WARNING: seed is infeasible, evolution will proceed but has no parent to improve on")
-    print()
+        print(f"gen 0  {seed_verdict}  fitness={seed_fitness}")
+        if seed_fitness is None:
+            print("  WARNING: seed is infeasible, evolution will proceed but has no parent to improve on")
+        print()
+
+        start_gen = 1
+        end_gen = args.generations + 1
+        thresholds = None
+        map_elites_active = False
 
     # -- build system prompt ---------------------------------------------- #
     system_prompt = build_system_prompt()
 
     # -- evolution loop --------------------------------------------------- #
-    thresholds = None
-    map_elites_active = False
-
-    for gen in range(1, args.generations + 1):
+    for gen in range(start_gen, end_gen):
         print(f"gen {gen}  ", end="", flush=True)
         candidates = load_candidates(run_dir)
         feasible = [c for c in candidates if c.get("fitness") is not None]
